@@ -1,0 +1,62 @@
+<html>
+
+<head>
+  <title>Todo App</title>
+  <style>
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div id='error', class="hidden">Something went wrong!</div>
+  <ul id='names'>
+    {% for d in data %}
+    <li>{{ d.name }}</li>
+    {% endfor %}
+  </ul>
+  <!-- <form method="POST" action="/create">
+    <input type="text" name="name">
+    <input type="submit" value="Create">
+  </form> -->
+  <form id="form">
+    <input type="text" id="newname" name="newname">
+    <input type="submit" value="Create2">
+  </form>
+  <script>
+    document.getElementById('form').onsubmit = function (e) {
+      e.preventDefault();
+      fetch('/createjson', {
+        method: 'POST',
+        body: JSON.stringify(
+          {
+            'name': document.getElementById('newname').value
+          }
+        ),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+
+      }
+
+      ).then(function (response) {
+        return response.json();
+      })
+        .then(function (jsonResponse) {
+          console.log(jsonResponse);
+          const nameItem = document.createElement('LI')
+          nameItem.innerHTML = jsonResponse['name']
+          document.getElementById('names').appendChild(nameItem);
+          document.getElementById('error').className = 'hidden'
+        }
+
+        )
+        .catch(function(){
+          document.getElementById('error').className = ''
+        })
+    }
+  </script>
+</body>
+
+</html>
